@@ -1,4 +1,4 @@
-# HiveMQ/Atlas Location Tracker App
+# HiveMQ and Atlas Location Tracker Expo App
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -8,7 +8,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 1. Ensure you have a cluster deployed in Atlas
 2. Create a new database and a TimeSeries collection with the following settings:
-```
+```json
 {
    timeseries: {
       timeField: "timestamp",
@@ -21,16 +21,23 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 1. Download HiveMQ Enterprise (https://www.hivemq.com/download/)
 2. Modify the `config.xml` file to enable the WebSocket Listener
-```
+```xml
 <listeners>
-    <listener>
-        <name>Websocket Listener</name>
-        <bind-address>
-
-         </bind-address>
+      <websocket-listener>
+          <port>8000</port>
+          <bind-address>0.0.0.0</bind-address>
+          <path>/mqtt</path>
+          <subprotocols>
+              <subprotocol>mqttv3.1</subprotocol>
+              <subprotocol>mqtt</subprotocol>
+          </subprotocols>
+          <allow-extensions>true</allow-extensions>
+      </websocket-listener>
+      <... other listeners>
+</listeners>
 ```
-3. Create a `config.xml` file in `extensions/hivemq-mongodb-extension/conf` with the following content:
-```
+3. Create a `config.xml` file in `extensions/hivemq-mongodb-extension/conf` with the following content and replace the `CONNECTION_STRING_FROM_ATLAS`, `COLLECTION_NAME_IN_DATABASE`, and `DATABASE_NAME_FROM_CLUSTER` with the appropriate values:
+```xml
  <hivemq-mongodb-extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:noNamespaceSchemaLocation="config.xsd">
  <mongodbs>
@@ -58,7 +65,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ```
 
 4. Create `document-template.json` in `extensions/hivemq-mongodb-extention` with the following content:
-```
+```json
 {
   "topic": "${mqtt-topic}",
   "metadata": ${mqtt-payload-utf8},
@@ -93,6 +100,7 @@ In order to renable, use the following steps:
    ```
 
 3. Choose a platform to run the app from the command line.
+NOTE: For iOS simulator, you can run the location simulation under Feature/Location.  This will simulate changes of position in the app.
 
 In the output, you'll find options to open the app in a
 
